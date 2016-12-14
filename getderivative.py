@@ -6,8 +6,7 @@ operationstack = list()
 function_name = ["ln", "sin", "cos", "tg", "ctg", "arcsin", "arctg"]
 priority = [['(', ')'], ['+', '-'], ['*', '/'], ["**"]]
 right_associative = ["**"]
-max_priority_val = 4
-
+max_priority_val = len(priority)
 
 def getPriority(str):
     for i in range(0, max_priority_val):
@@ -30,20 +29,25 @@ def isFunction(str):
 
 #toreversePolishNotation
 for elem in instr:
-    print(elem)
-    flag = False
-    flagName = ""
-    for t1 in function_name:
-        if (elem.find(t1) != -1):
-            flag = True
-            flagName = t1
-    if(flag):
-        operationstack.append(flagName)
-        #print(elem)
-        elem.replace(flagName, "")
-        #print(t1)
-        elem = elem[(len(flagName)):]
-        print(elem)
+    #print(elem)
+    while (elem[0] == '('):
+        elem = elem[1:]
+        operationstack.append('(')
+    flag = True
+    while(flag):
+        flag = False
+        flagName = ""
+        for t1 in function_name:
+            if (elem.find(t1) == 0):
+                flag = True
+                flagName = t1
+        if(flag):
+            operationstack.append(flagName)
+            elem.replace(flagName, "")
+            elem = elem[(len(flagName)):]
+        while (elem[0] == '('):
+            elem = elem[1:]
+            operationstack.append('(')
     closebracket_count = 0
     while(elem[0] == '('):
         elem = elem[1:]
@@ -55,13 +59,13 @@ for elem in instr:
         #print(elem)
         #outstr.append(int(elem))
         outstr.append(elem)
-    elif(elem == 'x'):
+    elif(elem == 'x' or elem == 'e'):
         outstr.append(elem)
     else:
         if(len(operationstack) != 0):
             temp = operationstack.pop()
-            print(outstr)
-            print(operationstack)
+            #print(outstr)
+            #print(operationstack)
             while((temp != "none") and (isRightAssociative(temp) and (getPriority(elem) < getPriority(temp)))
                   or (not isRightAssociative(str) and (getPriority(elem) <= getPriority(temp)))):
                 outstr.append(temp)
@@ -84,7 +88,8 @@ for elem in instr:
 while(len(operationstack) != 0):
     outstr.append(operationstack.pop())
 
-print(outstr)
+#print(outstr)
+#print(operationstack)
 
 #getDerivative
 workStack = list()
@@ -97,7 +102,7 @@ temp2 = 0
 temp1 = 0
 
 for elem in outstr:
-    if(elem.isnumeric()):
+    if(elem.isnumeric() or elem == 'e'):
         expressions.append(elem)
         derivatives.append("0")
         workStack.append(len(expressions) - 1)
