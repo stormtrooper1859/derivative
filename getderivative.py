@@ -103,7 +103,7 @@ def main(argv):
         while(len(operationstack) != 0):
             outstr.append(operationstack.pop())
 
-        print(outstr)
+        #print(outstr)
 
         #getDerivative
         workStack = list()
