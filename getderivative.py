@@ -24,6 +24,13 @@ def isFunction(str):
             return True
     return False
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def main(argv):
     infile = open(argv[1], 'r')
     outfile = open(argv[2], 'w')
@@ -63,7 +70,7 @@ def main(argv):
             while(elem[len(elem) - 1] == ')'):
                 elem = elem[:len(elem) - 1]
                 closebracket_count += 1
-            if(elem.isnumeric()):
+            if(is_number(elem)):
                 outstr.append(elem)
             elif(elem == 'x' or elem == 'e'):
                 outstr.append(elem)
@@ -116,7 +123,7 @@ def main(argv):
         temp1 = 0
 
         for elem in outstr:
-            if(elem.isnumeric() or elem == 'e'):
+            if(is_number(elem) or elem == 'e'):
                 expressions.append(elem)
                 derivatives.append("0")
                 workStack.append(len(expressions) - 1)
