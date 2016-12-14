@@ -29,7 +29,6 @@ def main(argv):
     outfile = open(argv[2], 'w')
     instrstr = infile.readline()
     while(instrstr != ""):
-        #instrstr = "sin(x)"
         #instrstr = input()
         instr = instrstr.split()
         instrstr = infile.readline()
@@ -65,16 +64,12 @@ def main(argv):
                 elem = elem[:len(elem) - 1]
                 closebracket_count += 1
             if(elem.isnumeric()):
-                #print(elem)
-                #outstr.append(int(elem))
                 outstr.append(elem)
             elif(elem == 'x' or elem == 'e'):
                 outstr.append(elem)
             else:
                 if(len(operationstack) != 0):
                     temp = operationstack.pop()
-                    #print(outstr)
-                    #print(operationstack)
                     while((temp != "none") and (isRightAssociative(temp) and (getPriority(elem) < getPriority(temp)))
                           or (not isRightAssociative(str) and (getPriority(elem) <= getPriority(temp)))):
                         outstr.append(temp)
@@ -88,17 +83,27 @@ def main(argv):
             for i in range(0, closebracket_count):
                 temp = operationstack.pop()
                 while (temp != '('):
-                    # print(temp)
                     outstr.append(temp)
                     if(len(operationstack) == 0):
                         temp = '('
                     else:
                         temp = operationstack.pop()
+                        if(isFunction(temp)):
+                            outstr.append(temp)
+                            if (len(operationstack) == 0):
+                                temp = '('
+                            else:
+                                temp = operationstack.pop()
+                if(len(operationstack) != 0):
+                    temp3 = operationstack.pop()
+                    if(isFunction(temp3)):
+                        outstr.append(temp3)
+                    else:
+                        operationstack.append(temp3)
         while(len(operationstack) != 0):
             outstr.append(operationstack.pop())
 
-        #print(outstr)
-        #print(operationstack)
+        print(outstr)
 
         #getDerivative
         workStack = list()
