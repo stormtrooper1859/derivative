@@ -36,15 +36,12 @@ def main(argv):
     outfile = open(argv[2], 'w')
     instrstr = infile.readline()
     while(instrstr != ""):
-        #instrstr = input()
         instr = instrstr.split()
         instrstr = infile.readline()
-
         outstr = list()
         operationstack = list()
         #toreversePolishNotation
         for elem in instr:
-            #print(elem)
             while (elem[0] == '('):
                 elem = elem[1:]
                 operationstack.append('(')
@@ -116,12 +113,8 @@ def main(argv):
         workStack = list()
         expressions = list()
         derivatives = list()
-
         expr = ""
         der = ""
-        temp2 = 0
-        temp1 = 0
-
         for elem in outstr:
             if(is_number(elem) or elem == 'e'):
                 expressions.append(elem)
@@ -133,94 +126,61 @@ def main(argv):
                 workStack.append(len(expressions) - 1)
             else:
                 if(isFunction(elem)):
+                    temp1 = workStack.pop()
                     if(elem == "ln"):
-                        temp1 = workStack.pop()
                         expr = "ln(" + expressions[temp1] + ")"
                         der = "(1 / " + expressions[temp1] + ") * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif(elem == "sin"):
-                        temp1 = workStack.pop()
                         expr = "sin(" + expressions[temp1] + ")"
                         der = "cos(" + expressions[temp1] + ") * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif (elem == "cos"):
-                        temp1 = workStack.pop()
                         expr = "cos(" + expressions[temp1] + ")"
                         der = "-sin(" + expressions[temp1] + ") * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif (elem == "tg"):
-                        temp1 = workStack.pop()
                         expr = "tg(" + expressions[temp1] + ")"
                         der = "(1 / cos(" + expressions[temp1] + ") ** 2) * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif (elem == "ctg"):
-                        temp1 = workStack.pop()
                         expr = "ctg(" + expressions[temp1] + ")"
                         der = "(-1 / sin(" + expressions[temp1] + ") ** 2) * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif (elem == "arcsin"):
-                        temp1 = workStack.pop()
                         expr = "arcsin(" + expressions[temp1] + ")"
                         der = "(1 / (1 - " + expressions[temp1] + " ** 2) ** (1 / 2)) * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif (elem == "arctg"):
-                        temp1 = workStack.pop()
                         expr = "arcsin(" + expressions[temp1] + ")"
                         der = "(1 / 1 + " + expressions[temp1] + " ** 2) * " + derivatives[temp1]
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                 else:
+                    temp2 = workStack.pop()
+                    temp1 = workStack.pop()
                     if(elem == '+' or elem == '-'):
-                        temp2 = workStack.pop()
-                        temp1 = workStack.pop()
                         expr = "(" + expressions[temp1] + " " + elem + " " + expressions[temp2] + ")"
                         der = "(" + derivatives[temp1] + " " + elem + " " + derivatives[temp2] + ")"
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif(elem == '*'):
-                        temp2 = workStack.pop()
-                        temp1 = workStack.pop()
                         expr = "(" + expressions[temp1] + " * " + expressions[temp2] + ")" # ?
                         der = "(" + derivatives[temp1] + " * " + expressions[temp2] + " + " + expressions[temp1] + " * " + derivatives[temp2] + ")"
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif(elem == '/'):
-                        temp2 = workStack.pop()
-                        temp1 = workStack.pop()
                         if(expressions[temp1] == '0'):
-                            expr = 0
-                            der = 0
+                            expr = '0'
+                            der = '0'
                         else:
                             expr = "(" + expressions[temp1] + " / " + expressions[temp2] + ")"
                             der = "(" + derivatives[temp1] + " * " + expressions[temp2] + " - " + expressions[temp1] + " * " + derivatives[temp2] + ")" \
                                 + " / (" + expressions[temp2] + " ** 2)"
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
                     elif(elem == "**"):
-                        temp2 = workStack.pop()
-                        temp1 = workStack.pop()
                         expr = "(" + expressions[temp1] + " ** " + expressions[temp2] + ")"
-                        der = "(" + expressions[temp1] + " ** " + expressions[temp2] + ") * (" + derivatives[temp1] + " / " + expressions[temp1] \
-                            + " * " + expressions[temp2] + " + " + derivatives[temp2] + " * ln(" + expressions[temp1] + "))"
-                        expressions.append(expr)
-                        derivatives.append(der)
-                        workStack.append(len(expressions) - 1)
+                        tmp = list()
+                        if(derivatives[temp1] != '0'):
+                            tmp.append(derivatives[temp1] + " / " + expressions[temp1] + " * " + expressions[temp2])
+                        if(derivatives[temp2] != '0'):
+                            tmp.append(derivatives[temp2] + " * ln(" + expressions[temp1] + ")")
+                        if(len(tmp) == 0):
+                            der = '0'
+                        else:
+                            der = "(" + expressions[temp1] + " ** " + expressions[temp2] + ") * (" + " + ".join(tmp) + ")"
+                        #der = "(" + expressions[temp1] + " ** " + expressions[temp2] + ") * (" + derivatives[temp1] + " / " + expressions[temp1] \
+                        #    + " * " + expressions[temp2] + " + " + derivatives[temp2] + " * ln(" + expressions[temp1] + "))"
+                expressions.append(expr)
+                derivatives.append(der)
+                workStack.append(len(expressions) - 1)
 
         #print("in:")
         #print(instrstr)
