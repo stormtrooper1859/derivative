@@ -169,7 +169,7 @@ def main(argv):
                         expr = "(" + expressions[temp1] + " ** " + expressions[temp2] + ")"
                         tmp = list()
                         if(derivatives[temp1] != '0'):
-                            tmp.append(derivatives[temp1] + " / " + expressions[temp1] + " * " + expressions[temp2])
+                            tmp.append(derivatives[temp1] + " / (" + expressions[temp1] + " * " + expressions[temp2] + ")")
                         if(derivatives[temp2] != '0'):
                             tmp.append(derivatives[temp2] + " * ln(" + expressions[temp1] + ")")
                         if(len(tmp) == 0):
