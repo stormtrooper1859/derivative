@@ -157,9 +157,8 @@ def main(argv):
                     if elem == '+' or elem == '-':
                         if is_number(expressions[temp1]) and is_number(expressions[temp2]):
                             der = str(0)
-                            expr = str(float(expressions[temp1]) + (float(expressions[temp2]) if elem == "+" else -float(expressions[temp2])))
-                            print(float(expressions[temp1]))
-                            print(-float(expressions[temp2]))
+                            expr = str(float(expressions[temp1]) + (float(expressions[temp2]) if elem == "+"
+                                                                    else -float(expressions[temp2])))
                         else:
                             expr = "(" + expressions[temp1] + " " + elem + " " + expressions[temp2] + ")"
                             der = "(" + derivatives[temp1] + " " + elem + " " + derivatives[temp2] + ")"
