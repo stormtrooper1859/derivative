@@ -19,7 +19,7 @@ def to_list(in_str):
             answer.append(tmp[1])
             answer.extend(to_list(tmp[2]))
             return answer
-    return list(in_str)
+    return [in_str]
 
 
 def get_priority(in_str):
@@ -129,10 +129,16 @@ def main(argv):
                         der = "(1 / " + expressions[temp1] + ") * " + derivatives[temp1]
                     elif elem == "sin":
                         expr = "sin(" + expressions[temp1] + ")"
-                        der = "cos(" + expressions[temp1] + ") * " + derivatives[temp1]
+                        if derivatives[temp1] == "0":
+                            der = "0"
+                        else:
+                            der = "cos(" + expressions[temp1] + ") * " + derivatives[temp1]
                     elif elem == "cos":
                         expr = "cos(" + expressions[temp1] + ")"
-                        der = "-sin(" + expressions[temp1] + ") * " + derivatives[temp1]
+                        if derivatives[temp1] == "0":
+                            der = "0"
+                        else:
+                            der = "-sin(" + expressions[temp1] + ") * " + derivatives[temp1]
                     elif elem == "tg":
                         expr = "tg(" + expressions[temp1] + ")"
                         der = "(1 / cos(" + expressions[temp1] + ") ** 2) * " + derivatives[temp1]
@@ -149,8 +155,14 @@ def main(argv):
                     temp2 = work_stack.pop()
                     temp1 = work_stack.pop()
                     if elem == '+' or elem == '-':
-                        expr = "(" + expressions[temp1] + " " + elem + " " + expressions[temp2] + ")"
-                        der = "(" + derivatives[temp1] + " " + elem + " " + derivatives[temp2] + ")"
+                        if is_number(expressions[temp1]) and is_number(expressions[temp2]):
+                            der = str(0)
+                            expr = str(float(expressions[temp1]) + (float(expressions[temp2]) if elem == "+" else -float(expressions[temp2])))
+                            print(float(expressions[temp1]))
+                            print(-float(expressions[temp2]))
+                        else:
+                            expr = "(" + expressions[temp1] + " " + elem + " " + expressions[temp2] + ")"
+                            der = "(" + derivatives[temp1] + " " + elem + " " + derivatives[temp2] + ")"
                     elif elem == '*':
                         expr = "(" + expressions[temp1] + " * " + expressions[temp2] + ")"
                         der = "(" + derivatives[temp1] + " * " + expressions[temp2] + " + " + expressions[temp1]\
