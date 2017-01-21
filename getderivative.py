@@ -5,7 +5,7 @@ priority = [['+', '-'], ['*', '/'], ["**"], ['(', ')']]
 right_associative = ["**"]
 max_priority_val = len(priority)
 
-ml = ["ln", "sin", "cos", "tg", "ctg", "arcsin", "arctg", '(', ')', '+', '-', '**', '/', "*"]
+ml = ["ln", "arcsin", "arctg", "sin", "cos", "ctg", "tg", '(', ')', '+', '-', '**', '/', "*"]
 
 
 def to_list(in_str):
@@ -149,8 +149,8 @@ def main(argv):
                         expr = "arcsin(" + expressions[temp1] + ")"
                         der = "(1 / (1 - " + expressions[temp1] + " ** 2) ** (1 / 2)) * " + derivatives[temp1]
                     elif elem == "arctg":
-                        expr = "arcsin(" + expressions[temp1] + ")"
-                        der = "(1 / 1 + " + expressions[temp1] + " ** 2) * " + derivatives[temp1]
+                        expr = "arctg(" + expressions[temp1] + ")"
+                        der = "(1 / (1 + " + expressions[temp1] + " ** 2)) * " + derivatives[temp1]
                 else:
                     temp2 = work_stack.pop()
                     temp1 = work_stack.pop()
@@ -172,8 +172,8 @@ def main(argv):
                             der = '0'
                         else:
                             expr = "(" + expressions[temp1] + " / " + expressions[temp2] + ")"
-                            der = "(" + derivatives[temp1] + " * " + expressions[temp2] + " - " + expressions[temp1]\
-                                  + " * " + derivatives[temp2] + ")" \
+                            der = "((" + derivatives[temp1] + " * " + expressions[temp2] + ") - (" + expressions[temp1]\
+                                  + " * " + derivatives[temp2] + "))" \
                                 + " / (" + expressions[temp2] + " ** 2)"
                     elif elem == "**":
                         expr = "(" + expressions[temp1] + " ** " + expressions[temp2] + ")"
